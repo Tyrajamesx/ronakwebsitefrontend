@@ -12,6 +12,8 @@
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
     "@tailwindcss/postcss": "^4.1.18",
+    "@walletconnect/ethereum-provider": "^2.23.7",
+    "@walletconnect/modal": "^2.7.0",
     "axios": "^1.13.2",
     "clsx": "^2.1.1",
     "ethers": "^6.16.0",

@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ZapSwap – USDT ⇄ TRX Exchange</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #060810;
+      --bg2: #0C0F1A;
+      --surface: #111525;
+      --surface2: #181d30;
+      --border: rgba(255, 255, 255, 0.07);
+      --border2: rgba(255, 255, 255, 0.12);
+      --text: #EEF0F6;
+      --muted: #6B7494;
+      --usdt: #26A17B;
+      --usdt-bg: rgba(38, 161, 123, 0.10);
+      --trx: #EF0027;
+      --trx-bg: rgba(239, 0, 39, 0.10);
+      --green: #22C55E;
+      --gold: #F59E0B;
+    }
+
+    html,
+    body {
+      width: 100%;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(38, 161, 123, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(38, 161, 123, 0.025) 1px, transparent 1px);
+      background-size: 52px 52px;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      background: rgba(6, 8, 16, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Space Mono', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-mark {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--usdt), #16a34a);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .logo em {
+      color: var(--usdt);
+      font-style: normal;
+    }
+
+    .nav-pill {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: var(--usdt-bg);
+      color: var(--usdt);
+      border: 1px solid rgba(38, 161, 123, 0.28);
+      white-space: nowrap;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 72px 16px 40px;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 300px;
+      pointer-events: none;
+      background: radial-gradient(ellipse, rgba(38, 161, 123, 0.07) 0%, transparent 70%);
+    }
+
+    /* Mobile-first: single column */
+    .hero-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    /* LEFT TEXT */
+    .hero-left {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      width: 100%;
+      animation: fadeUp .6s ease both;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--usdt-bg);
+      border: 1px solid rgba(38, 161, 123, 0.3);
+      border-radius: 100px;
+      padding: 5px 12px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--usdt);
+      margin-bottom: 16px;
+    }
+
+    .blink {
+      width: 6px;
+      height: 6px;
+      background: var(--usdt);
+      border-radius: 50%;
+      animation: blink 1.4s infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .2
+      }
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 12px;
+    }
+
+    h1 .u {
+      color: var(--usdt);
+    }
+
+    h1 .t {
+      color: var(--trx);
+    }
+
+    h1 .dim {
+      color: rgba(238, 240, 246, 0.4);
+    }
+
+    .hero-desc {
+      font-size: .88rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .hero-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 7px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── SWAP CARD ── */
+    .swap-card {
+      position: relative;
+      z-index: 1;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 18px;
+      padding: 20px 16px 18px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+      width: 100%;
+      animation: fadeUp .6s .08s ease both;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-family: 'Space Mono', monospace;
+      font-size: .85rem;
+      font-weight: 700;
+    }
+
+    .rate-chip {
+      font-family: 'Space Mono', monospace;
+      font-size: .62rem;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 6px;
+      background: var(--bg2);
+      color: var(--gold);
+      border: 1px solid rgba(245, 158, 11, .2);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* INPUT BOXES */
+    .swap-box {
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 14px;
+      transition: border-color .2s;
+    }
+
+    .swap-box:focus-within {
+      border-color: rgba(38, 161, 123, .45);
+    }
+
+    .box-label {
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .box-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .amount-input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: 'Space Mono', monospace;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      min-width: 0;
+      width: 100%;
+      -moz-appearance: textfield;
+    }
+
+    .amount-input::-webkit-inner-spin-button,
+    .amount-input::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+    }
+
+    .amount-input::placeholder {
+      color: rgba(255, 255, 255, .13);
+    }
+
+    .amount-display {
+      flex: 1;
+      min-width: 0;
+      font-family: 'Space Mono', monospace;
+      font-size: 1.4rem;
+      font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .token-badge {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: .78rem;
+    }
+
+    .token-badge.usdt {
+      background: var(--usdt-bg);
+      color: var(--usdt);
+      border: 1px solid rgba(38, 161, 123, .25);
+    }
+
+    .token-badge.trx {
+      background: var(--trx-bg);
+      color: var(--trx);
+      border: 1px solid rgba(239, 0, 39, .25);
+    }
+
+    .ticon {
+      font-size: .9rem;
+    }
+
+    /* FLIP */
+    .flip-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 36px;
+      position: relative;
+      margin: 3px 0;
+    }
+
+    .flip-row::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .flip-btn {
+      position: relative;
+      z-index: 1;
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      border: 1.5px solid var(--border2);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: .9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s, border-color .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .flip-btn:active {
+      background: var(--usdt-bg);
+      border-color: rgba(38, 161, 123, .4);
+      color: var(--usdt);
+    }
+
+    /* RATE ROW */
+    .rate-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 12px;
+      background: var(--bg2);
+      border-radius: 9px;
+      font-size: .75rem;
+      color: var(--muted);
+      margin: 10px 0 14px;
+    }
+
+    .rate-row strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* EXCHANGE BTN */
+    .btn-exchange {
+      width: 100%;
+      padding: 14px;
+      border-radius: 11px;
+      border: none;
+      font-family: 'Outfit', sans-serif;
+      font-size: .92rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: .2px;
+      transition: opacity .2s, transform .1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-exchange:active {
+      transform: scale(.97);
+      opacity: .9;
+    }
+
+    .btn-exchange.mode-usdt-trx {
+      background: linear-gradient(135deg, var(--usdt), #16a34a);
+      color: #fff;
+    }
+
+    .btn-exchange.mode-trx-usdt {
+      background: linear-gradient(135deg, #c8001e, var(--trx));
+      color: #fff;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how-section {
+      position: relative;
+      z-index: 1;
+      padding: 56px 16px;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+    }
+
+    .how-inner {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .sec-tag {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--usdt);
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .sec-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 28px;
+      text-align: center;
+    }
+
+    /* Steps: 2 columns on mobile */
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 14px;
+      text-align: center;
+      transition: background .2s;
+    }
+
+    .step:active {
+      background: var(--surface2);
+    }
+
+    .step-n {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, .06);
+      margin-bottom: 8px;
+    }
+
+    .step-i {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+
+    .step-t {
+      font-weight: 700;
+      font-size: .85rem;
+      margin-bottom: 5px;
+    }
+
+    .step-d {
+      font-size: .75rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 20px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-align: center;
+      font-size: .72rem;
+      color: var(--muted);
+    }
+
+    footer .flogo {
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      color: var(--text);
+      font-size: .85rem;
+    }
+
+    footer .flogo em {
+      color: var(--usdt);
+      font-style: normal;
+    }
+
+    /* ── MODAL ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(0, 0, 0, .85);
+      backdrop-filter: blur(6px);
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .overlay.on {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 20px 20px 0 0;
+      padding: 24px 16px 32px;
+      width: 100%;
+      box-shadow: 0 -20px 60px rgba(0, 0, 0, .5);
+      animation: slideUp .25s ease;
+      max-height: 92vh;
+      overflow-y: auto;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(100%)
+      }
+
+      to {
+        transform: translateY(0)
+      }
+    }
+
+    /* modal drag handle */
+    .modal-handle {
+      width: 36px;
+      height: 4px;
+      background: rgba(255, 255, 255, .15);
+      border-radius: 2px;
+      margin: 0 auto 18px;
+    }
+
+    .modal-head {
+      font-family: 'Space Mono', monospace;
+      font-size: .95rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .modal-sub {
+      font-size: .78rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 18px;
+    }
+
+    .wallet-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+      margin-bottom: 14px;
+    }
+
+    .wallet-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: border-color .2s, background .2s, transform .1s;
+      text-align: left;
+    }
+
+    .wallet-btn:active {
+      transform: scale(.99);
+      background: var(--surface2);
+      border-color: rgba(38, 161, 123, .35);
+    }
+
+    .wallet-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .wallet-ico {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      flex-shrink: 0;
+      border: 1px solid var(--border2);
+      background: var(--surface);
+    }
+
+    .wallet-name {
+      font-weight: 750;
+      font-size: .92rem;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .wallet-meta {
+      font-size: .72rem;
+      color: var(--muted);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .wallet-right {
+      font-family: 'Space Mono', monospace;
+      font-size: .74rem;
+      color: var(--muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .w-status {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+    }
+
+    .w-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: .8rem;
+    }
+
+    .w-row+.w-row {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    .w-lbl {
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .w-val {
+      font-family: 'Space Mono', monospace;
+      font-size: .72rem;
+      font-weight: 700;
+      text-align: right;
+      word-break: break-all;
+    }
+
+    .m-summary {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 13px 14px;
+      margin-bottom: 14px;
+    }
+
+    .m-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .78rem;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 8px;
+    }
+
+    .m-row:last-child {
+      border: none;
+    }
+
+    .m-lbl {
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .m-val {
+      font-family: 'Space Mono', monospace;
+      font-size: .72rem;
+      font-weight: 700;
+      text-align: right;
+      word-break: break-all;
+    }
+
+    .m-val.g {
+      color: var(--green);
+    }
+
+    .m-val.r {
+      color: var(--trx);
+    }
+
+    .addr-box {
+      background: var(--bg2);
+      border: 1.5px solid rgba(38, 161, 123, .3);
+      border-radius: 11px;
+      padding: 14px;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    .addr-label {
+      font-size: .65rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .addr-text {
+      font-family: 'Space Mono', monospace;
+      font-size: .7rem;
+      color: var(--usdt);
+      word-break: break-all;
+      line-height: 1.7;
+      cursor: pointer;
+    }
+
+    .addr-hint {
+      font-size: .62rem;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    .amount-big {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-align: center;
+      margin: 12px 0 14px;
+    }
+
+    .modal-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-cancel {
+      flex: 1;
+      padding: 13px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-done {
+      flex: 2;
+      padding: 13px;
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-done.g {
+      background: linear-gradient(135deg, var(--usdt), #16a34a);
+    }
+
+    .btn-done.r {
+      background: linear-gradient(135deg, #c8001e, var(--trx));
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--text);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, .4);
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .28s;
+      white-space: nowrap;
+      max-width: 85vw;
+      text-align: center;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    /* ── DESKTOP (larger screens) ── */
+    @media(min-width: 700px) {
+      nav {
+        height: 62px;
+        padding: 0 5%;
+      }
+
+      .logo {
+        font-size: 1.1rem;
+      }
+
+      .hero {
+        padding: 88px 5% 60px;
+        min-height: 100vh;
+      }
+
+      .hero-wrap {
+        flex-direction: row;
+        max-width: 1080px;
+        gap: 60px;
+        align-items: center;
+      }
+
+      .hero-left {
+        text-align: left;
+        flex: 1;
+      }
+
+      .hero-pills {
+        justify-content: flex-start;
+      }
+
+      h1 {
+        font-size: clamp(2.6rem, 5vw, 3.8rem);
+        letter-spacing: -2px;
+        margin-bottom: 16px;
+      }
+
+      .hero-desc {
+        font-size: .96rem;
+        margin-bottom: 28px;
+      }
+
+      .swap-card {
+        flex: 1;
+        padding: 28px 24px 24px;
+        border-radius: 20px;
+      }
+
+      .amount-input,
+      .amount-display {
+        font-size: 1.6rem;
+      }
+
+      .token-badge {
+        padding: 7px 13px;
+        font-size: .85rem;
+        gap: 6px;
+      }
+
+      .how-section {
+        padding: 80px 5%;
+      }
+
+      .how-inner {
+        max-width: 1080px;
+      }
+
+      .sec-tag {
+        text-align: left;
+      }
+
+      .sec-title {
+        text-align: left;
+        font-size: 2.2rem;
+        margin-bottom: 40px;
+      }
+
+      .steps {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2px;
+        background: var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+      }
+
+      .step {
+        border: none;
+        border-radius: 0;
+        text-align: left;
+        padding: 28px 24px;
+      }
+
+      footer {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 24px 5%;
+        font-size: .78rem;
+      }
+
+      .overlay {
+        align-items: center;
+      }
+
+      .modal {
+        border-radius: 20px;
+        max-width: 440px;
+        padding: 30px 26px;
+        animation: popUp .22s ease;
+      }
+
+      .modal-handle {
+        display: none;
+      }
+
+      @keyframes popUp {
+        from {
+          opacity: 0;
+          transform: scale(.94) translateY(10px)
+        }
+
+        to {
+          opacity: 1;
+          transform: none
+        }
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">
+      <div class="logo-mark">₮</div>
+      Zap<em>Swap</em>
+    </div>
+    <div class="nav-pill">USDT ⇄ TRX</div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-wrap">
+
+      <div class="hero-left">
+        <div class="badge">
+          <div class="blink"></div>Instant Swap
+        </div>
+        <h1>
+          Swap <span class="u">USDT</span><br>
+          <span class="dim">&amp;</span> <span class="t">TRX</span><br>
+          <span class="dim">Instantly</span>
+        </h1>
+        <p class="hero-desc">Exchange USDT ↔ TRX both ways — fast, fixed rates, no registration required.</p>
+        <div class="hero-pills">
+          <div class="pill">
+            <div class="pill-dot" style="background:var(--green)"></div>~5 Min Speed
+          </div>
+          <div class="pill">
+            <div class="pill-dot" style="background:var(--gold)"></div>Fixed Rate
+          </div>
+          <div class="pill">
+            <div class="pill-dot" style="background:var(--usdt)"></div>No Sign Up
+          </div>
+        </div>
+      </div>
+
+      <div class="swap-card">
+        <div class="card-top">
+          <div class="card-title">Exchange</div>
+          <div class="rate-chip" id="rateChip">—</div>
+        </div>
+
+        <div class="swap-box">
+          <div class="box-label">You Send</div>
+          <div class="box-row">
+            <input class="amount-input" id="fromInput" type="number" min="0" placeholder="0" oninput="recalc('from')"
+              inputmode="decimal" />
+            <div class="token-badge" id="fromBadge"></div>
+          </div>
+        </div>
+
+        <div class="flip-row">
+          <button class="flip-btn" onclick="flipPair()">⇅</button>
+        </div>
+
+        <div class="swap-box">
+          <div class="box-label">You Receive</div>
+          <div class="box-row">
+            <input class="amount-input" id="toInput" type="number" min="0" placeholder="0" oninput="recalc('to')"
+              inputmode="decimal" />
+            <div class="token-badge" id="toBadge"></div>
+          </div>
+        </div>
+
+        <div class="rate-row">
+          <span>Exchange Rate</span>
+          <strong id="rateText">—</strong>
+        </div>
+
+        <button class="btn-exchange" id="exchBtn" onclick="exchangeNow()">Exchange Now →</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section">
+    <div class="how-inner">
+      <div class="sec-tag">Process</div>
+      <div class="sec-title">How it works</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-n">01</div>
+          <div class="step-i">💱</div>
+          <div class="step-t">Choose Direction</div>
+          <div class="step-d">Pick USDT→TRX or TRX→USDT and enter the amount.</div>
+        </div>
+        <div class="step">
+          <div class="step-n">02</div>
+          <div class="step-i">📤</div>
+          <div class="step-t">Send Coins</div>
+          <div class="step-d">Send the exact amount to the deposit address shown.</div>
+        </div>
+        <div class="step">
+          <div class="step-n">03</div>
+          <div class="step-i">✅</div>
+          <div class="step-t">Verified</div>
+          <div class="step-d">Payment verified on the TRON blockchain automatically.</div>
+        </div>
+        <div class="step">
+          <div class="step-n">04</div>
+          <div class="step-i">⚡</div>
+          <div class="step-t">Receive Funds</div>
+          <div class="step-d">Funds sent to your wallet within minutes.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="flogo">Zap<em>Swap</em></div>
+    <div>USDT ⇄ TRX · TRC20</div>
+    <div>© 2026 ZapSwap</div>
+  </footer>
+
+  <!-- MODAL -->
+  <div class="overlay" id="overlay" onclick="overlayClick(event)">
+    <div class="modal" id="modalBox">
+      <div class="modal-handle"></div>
+      <div class="modal-head">Connect Wallet</div>
+      <div class="modal-sub">
+        Choose a wallet to connect. We will switch your wallet to <strong>BNB Smart Chain</strong> (USDT on BSC) for
+        USDT → TRX.
+      </div>
+
+      <div class="w-status">
+        <div class="w-row"><span class="w-lbl">Network</span><span class="w-val" id="wNetwork">BNB Smart Chain</span>
+        </div>
+        <div class="w-row"><span class="w-lbl">Wallet</span><span class="w-val" id="wAccount">Not connected</span></div>
+      </div>
+
+      <div class="wallet-list">
+        <button class="wallet-btn" onclick="connectWallet('trust')">
+          <span class="wallet-left">
+            <span class="wallet-ico" style="color:#16a34a">TW</span>
+            <span style="min-width:0">
+              <div class="wallet-name">Trust Wallet</div>
+              <div class="wallet-meta">Connect &amp; switch to BNB chain</div>
+            </span>
+          </span>
+          <span class="wallet-right">Connect</span>
+        </button>
+
+        <button class="wallet-btn" onclick="connectWallet('metamask')">
+          <span class="wallet-left">
+            <span class="wallet-ico" style="color:#f59e0b">MM</span>
+            <span style="min-width:0">
+              <div class="wallet-name">MetaMask</div>
+              <div class="wallet-meta">Connect &amp; switch to BNB chain</div>
+            </span>
+          </span>
+          <span class="wallet-right">Connect</span>
+        </button>
+
+        <button class="wallet-btn" onclick="connectWallet('okx')">
+          <span class="wallet-left">
+            <span class="wallet-ico" style="color:#93c5fd">OKX</span>
+            <span style="min-width:0">
+              <div class="wallet-name">OKX Wallet</div>
+              <div class="wallet-meta">Connect &amp; switch to BNB chain</div>
+            </span>
+          </span>
+          <span class="wallet-right">Connect</span>
+        </button>
+      </div>
+
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-done g" id="wContinueBtn" onclick="continueAfterConnect()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ═══════════════════════════════════════════════
+    //  ✏️  RATE YAHAN EDIT KARO
+    // ═══════════════════════════════════════════════
+    let RATE_USDT_TO_TRX = 3.53;
+    let RATE_TRX_TO_USDT = 0.267;
+
+    async function fetchDynamicRates() {
+      try {
+        const res = await fetch("https://api.binance.com/api/v3/ticker/price?symbol=TRXUSDT");
+        const data = await res.json();
+        const trxUsdtPrice = parseFloat(data.price);
+
+        // Applying a 2.5% markup to the base market rate.
+        RATE_USDT_TO_TRX = parseFloat(((1 / trxUsdtPrice) * 1.025).toFixed(4));
+        RATE_TRX_TO_USDT = parseFloat((trxUsdtPrice * 1.025).toFixed(4));
+
+        // Update the UI once live rate is fetched
+        if (typeof renderUI === "function") {
+          renderUI();
+        }
+      } catch (e) {
+        console.error("Error fetching rates from Binance:", e);
+      }
+    }
+    fetchDynamicRates();
+
+    // ═══════════════════════════════════════════════
+    //  ✏️  DEPOSIT ADDRESSES YAHAN DAALO
+    // ═══════════════════════════════════════════════
+    const ADDR_FOR_USDT = "TYourUSDT_DepositAddressHere";
+    const ADDR_FOR_TRX = "TYourTRX_DepositAddressHere";
+
+    // ═══════════════════════════════════════════════
+    //  ✏️  TRUSTWALLET LINK YAHAN DAALO
+    // ═══════════════════════════════════════════════
+    const TRUSTWALLET_LINK = "https://link.trustwallet.com/send?coin=195&address=TYourAddress";
+
+    let mode = 'usdt-trx';
+    let connectedAccount = null;
+    let connectedProvider = null;
+
+    const BSC = {
+      chainId: '0x38',
+      chainName: 'BNB Smart Chain',
+      nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+      rpcUrls: ['https://bsc-dataseed.binance.org/'],
+      blockExplorerUrls: ['https://bscscan.com']
+    };
+
+    const cfg = {
+      'usdt-trx': { rate: () => RATE_USDT_TO_TRX, from: 'USDT', to: 'TRX', fromCls: 'usdt', toCls: 'trx', fromIcon: '₮', toIcon: '⚡', addr: () => ADDR_FOR_USDT, btnCls: 'mode-usdt-trx', doneCls: 'g', toColor: 'var(--trx)' },
+      'trx-usdt': { rate: () => RATE_TRX_TO_USDT, from: 'TRX', to: 'USDT', fromCls: 'trx', toCls: 'usdt', fromIcon: '⚡', toIcon: '₮', addr: () => ADDR_FOR_TRX, btnCls: 'mode-trx-usdt', doneCls: 'r', toColor: 'var(--usdt)' },
+    };
+
+    function renderUI() {
+      const c = cfg[mode];
+      const rateStr = `1 USDT = ${RATE_USDT_TO_TRX} TRX`;
+      document.getElementById('fromBadge').className = `token-badge ${c.fromCls}`;
+      document.getElementById('fromBadge').innerHTML = `<span class="ticon">${c.fromIcon}</span>${c.from}`;
+      document.getElementById('toBadge').className = `token-badge ${c.toCls}`;
+      document.getElementById('toBadge').innerHTML = `<span class="ticon">${c.toIcon}</span>${c.to}`;
+      document.getElementById('rateChip').textContent = rateStr;
+      document.getElementById('rateText').textContent = rateStr;
+      const btn = document.getElementById('exchBtn');
+      btn.className = `btn-exchange ${c.btnCls}`;
+      btn.textContent = `Exchange ${c.from} → ${c.to}`;
+      document.getElementById('toInput').style.color = c.toColor;
+      recalc();
+    }
+
+    function recalc(source = 'from') {
+      const rate = cfg[mode].rate();
+      const fromEl = document.getElementById('fromInput');
+      const toEl = document.getElementById('toInput');
+
+      if (source === 'from') {
+        const raw = fromEl.value;
+        const val = parseFloat(raw);
+
+        if (!raw || isNaN(val)) {
+          toEl.value = '';
+          return;
+        }
+
+        const out = val * rate;
+        toEl.value = out ? out.toFixed(2).replace(/\.00$/, '') : '';
+      } else {
+        const raw = toEl.value;
+        const val = parseFloat(raw);
+
+        if (!raw || isNaN(val)) {
+          fromEl.value = '';
+          return;
+        }
+
+        const out = val / rate;
+        fromEl.value = out ? out.toFixed(2).replace(/\.00$/, '') : '';
+      }
+    }
+
+    function flipPair() {
+      mode = mode === 'usdt-trx' ? 'trx-usdt' : 'usdt-trx';
+      document.getElementById('fromInput').value = '';
+      document.getElementById('toInput').value = '';
+      renderUI();
+    }
+
+    function exchangeNow() {
+      const amt = parseFloat(document.getElementById('fromInput').value);
+      if (!amt || amt <= 0) { showToast('⚠️ Please enter amount to swap'); return; }
+      showToast('✅ Processing your exchange…');
+    }
+
+    function openConnectModal() {
+      document.getElementById('overlay').classList.add('on');
+      document.body.style.overflow = 'hidden';
+      updateWalletUI();
+    }
+
+    function closeModal() {
+      document.getElementById('overlay').classList.remove('on');
+      document.body.style.overflow = '';
+    }
+
+    function overlayClick(e) { if (e.target === document.getElementById('overlay')) closeModal(); }
+
+    function shortenAddr(a) {
+      if (!a) return '';
+      return a.slice(0, 6) + '…' + a.slice(-4);
+    }
+
+    function updateWalletUI() {
+      const accEl = document.getElementById('wAccount');
+      const netEl = document.getElementById('wNetwork');
+      const btn = document.getElementById('wContinueBtn');
+      netEl.textContent = BSC.chainName;
+
+      if (connectedAccount) {
+        accEl.textContent = shortenAddr(connectedAccount);
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      } else {
+        accEl.textContent = 'Not connected';
+        btn.disabled = true;
+        btn.style.opacity = '.6';
+      }
+    }
+
+    function pickInjectedProvider(kind) {
+      const eth = window.ethereum;
+      const list = eth && Array.isArray(eth.providers) ? eth.providers : [];
+
+      const byFlag = (p, k) => {
+        if (!p) return false;
+        if (k === 'metamask') return !!p.isMetaMask;
+        if (k === 'trust') return !!p.isTrust || !!p.isTrustWallet;
+        if (k === 'okx') return !!p.isOkxWallet || !!p.isOKXWallet;
+        return false;
+      };
+
+      if (kind === 'okx' && window.okxwallet) return window.okxwallet;
+      if (list.length) {
+        const hit = list.find(p => byFlag(p, kind));
+        return hit || list[0];
+      }
+      return eth || null;
+    }
+
+    async function ensureBsc(provider) {
+      const chainId = await provider.request({ method: 'eth_chainId' });
+      if (chainId === BSC.chainId) return;
+
+      try {
+        await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: BSC.chainId }] });
+      } catch (err) {
+        if (err && (err.code === 4902 || (typeof err.message === 'string' && err.message.includes('4902')))) {
+          await provider.request({ method: 'wallet_addEthereumChain', params: [BSC] });
+          await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: BSC.chainId }] });
+        } else {
+          throw err;
+        }
+      }
+    }
+
+    async function connectWallet(kind) {
+      try {
+        const provider = pickInjectedProvider(kind);
+        if (!provider || !provider.request) {
+          // If no injected provider (common on mobile), open Trust Wallet to this page.
+          if (kind === 'trust') {
+            const deep = 'https://link.trustwallet.com/open_url?url=' + encodeURIComponent(window.location.href);
+            window.open(deep, '_blank');
+            showToast('Open this page in Trust Wallet browser');
+            return;
+          }
+          showToast('⚠️ Wallet not found in this browser');
+          return;
+        }
+
+        connectedProvider = provider;
+        const accounts = await provider.request({ method: 'eth_requestAccounts' });
+        connectedAccount = Array.isArray(accounts) && accounts[0] ? accounts[0] : null;
+        await ensureBsc(provider);
+        updateWalletUI();
+        showToast('✅ Wallet connected on BNB Smart Chain');
+      } catch (e) {
+        console.error(e);
+        showToast('❌ Connection rejected or failed');
+      }
+    }
+
+    function continueAfterConnect() {
+      if (!connectedAccount) {
+        showToast('⚠️ Please connect wallet first');
+        return;
+      }
+      closeModal();
+      showToast('Next: Approve USDT on BNB chain');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2600);
+    }
+
+    renderUI();
+  </script>
+</body>
+
+</html>
